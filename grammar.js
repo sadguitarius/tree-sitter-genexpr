@@ -366,7 +366,12 @@ module.exports = grammar({
     computed_member_expression: $ =>
       seq('[', field('field', $._true_expression), ']'),
 
-    literal_member_expression: $ => seq('.', field('field', $.identifier)),
+    literal_member_expression: $ =>
+      seq(
+        '.',
+        field('field', $.identifier),
+        optional(field('parameters', $.call_member_expression))
+      ),
 
     call_member_expression: $ =>
       seq(
@@ -394,7 +399,10 @@ module.exports = grammar({
     parenthesized_expression: $ => seq('(', $._expression, ')'),
 
     type_specifier: _ =>
-      prec(2, token(choice(/param/i, /history/i, /buffer/i, /data/i))),
+      prec(
+        2,
+        token(choice(/param/i, /history/i, /buffer/i, /data/i, /delay/i))
+      ),
 
     inlet_outlet: _ => prec(2, token(seq('', /(in|out)[0-9]+/i))),
 

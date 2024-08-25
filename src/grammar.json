@@ -2339,6 +2339,22 @@
             "type": "SYMBOL",
             "name": "identifier"
           }
+        },
+        {
+          "type": "CHOICE",
+          "members": [
+            {
+              "type": "FIELD",
+              "name": "parameters",
+              "content": {
+                "type": "SYMBOL",
+                "name": "call_member_expression"
+              }
+            },
+            {
+              "type": "BLANK"
+            }
+          ]
         }
       ]
     },
@@ -2496,6 +2512,11 @@
             {
               "type": "PATTERN",
               "value": "data",
+              "flags": "i"
+            },
+            {
+              "type": "PATTERN",
+              "value": "delay",
               "flags": "i"
             }
           ]
