@@ -13,16 +13,10 @@ module.exports = grammar({
 
   extras: $ => [/\s|\r?\n/, $.comment],
 
-  // inline: $ => [$._statement],
-
   precedences: $ => [
     [
-      // $.type_specifier,
-      // $.inlet_outlet,
-      // $.identifier,
       $.function_declaration,
       $.declaration,
-      // 'call',
       $.jump_statement,
       $.function_declaration_parameter,
       $._primary_expression,
@@ -33,11 +27,7 @@ module.exports = grammar({
       $.binary_expression,
       'binary_times',
       'binary_plus',
-      'binary_shift',
       'binary_compare',
-      'bitwise_and',
-      'bitwise_xor',
-      'bitwise_or',
       'logical_and',
       'logical_xor',
       'logical_or',
@@ -48,18 +38,10 @@ module.exports = grammar({
     ]
   ],
 
-  // conflicts: $ => [
-  //   [$._primary_expression, $.function_declaration],
-  //   [$._primary_expression, $.function_declaration_parameter]
-  // ],
-
-  // word: $ => $.identifier,
-
   supertypes: $ => [
     $._expression,
     $.iteration_statement,
     $.jump_statement
-    // $.postfix_expression
   ],
 
   rules: {
@@ -123,7 +105,7 @@ module.exports = grammar({
         $.iteration_statement
       ),
 
-    compound_statement: $ => seq('{', $.expr_statement_list, '}'),
+    compound_statement: $ => seq('{', optional($.expr_statement_list), '}'),
 
     expr_statement_list: $ =>
       choice(
@@ -211,7 +193,6 @@ module.exports = grammar({
     multiple_assignment: $ =>
       choice(
         prec.right(
-          // 'assign',
           seq(
             field('left', commaSep1($._simple_expression)),
             field('operator', $.assignment_operator),
@@ -222,7 +203,6 @@ module.exports = grammar({
 
     single_assignment: $ =>
       prec.right(
-        // 'assign',
         seq(
           field('left', $._simple_expression),
           field('operator', $.assignment_operator),
@@ -237,7 +217,6 @@ module.exports = grammar({
 
     single_declaration_expression: $ =>
       prec.right(
-        // 'assign',
         seq(
           field('left', choice($.identifier, $.inlet_outlet)),
           field('operator', '='),
@@ -247,7 +226,6 @@ module.exports = grammar({
 
     multi_declaration_expression: $ =>
       prec.right(
-        // 'assign',
         seq(
           field('left', commaSep1(choice($.identifier, $.inlet_outlet))),
           field('operator', '='),
@@ -290,6 +268,8 @@ module.exports = grammar({
         ['>=p', 'binary_compare'],
         ['<p', 'binary_compare'],
         ['>p', 'binary_compare'],
+        ['==p', 'binary_compare'],
+        ['!=p', 'binary_compare'],
         ['<=', 'binary_compare'],
         ['>=', 'binary_compare'],
         ['<', 'binary_compare'],
@@ -299,11 +279,6 @@ module.exports = grammar({
         ['&&', 'logical_and'],
         ['||', 'logical_or'],
         ['^^', 'logical_xor']
-        // ['<<', 'bitshift'],
-        // ['>>', 'bitshift'],
-        // ['&', 'bitwise_and'],
-        // ['|', 'bitwise_or'],
-        // ['^', 'bitwise_xor'],
       ];
 
       return choice(
@@ -338,9 +313,8 @@ module.exports = grammar({
 
     unary_expression: $ =>
       prec.left(
-        // 'unary',
         seq(
-          field('operator', choice('-', '!', '~')),
+          field('operator', choice('-', '!')),
           field(
             'argument',
             choice($._simple_expression, $.parenthesized_expression)
@@ -388,12 +362,6 @@ module.exports = grammar({
         ')'
       ),
 
-    // call_expression_arguments: $ => $.arguments,
-
-    // arguments: $ => commaSep1($.argument),
-
-    // argument: $ => seq($.identifier, '=', $._true_expression),
-
     _primary_expression: $ => choice($.identifier, $._literal, $.inlet_outlet),
 
     parenthesized_expression: $ => seq('(', $._expression, ')'),
@@ -406,7 +374,6 @@ module.exports = grammar({
 
     inlet_outlet: _ => prec(2, token(seq('', /(in|out)[0-9]+/i))),
 
-    // TODO: exclude reserved words pegjs line 705
     identifier: _ => prec(1, /[_a-z][_a-z0-9]*/i),
 
     _literal: $ => choice($.number_literal, $.string_literal),
@@ -428,17 +395,13 @@ module.exports = grammar({
 
     _string: $ => prec.left($.string_literal),
 
-    // TODO: figure out valid string in genexpr -- pegjs line 806
+    // strings have no escapes; backslash is a plain character
     string_literal: $ =>
       seq(
         '"',
-        repeat(
-          choice(alias(token.immediate(prec(1, /[^\\"\n]+/)), $.string_content))
-        ),
+        repeat(choice(alias(token.immediate(prec(1, /[^"\n]+/)), $.string_content))),
         '"'
       ),
-
-    // TODO: boolean and null literals -- pegjs line 777
 
     comment: _ =>
       token(

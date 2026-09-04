@@ -1,0 +1,39 @@
+{
+  "$schema": "https://tree-sitter.github.io/tree-sitter/assets/schemas/config.schema.json",
+  "grammars": [
+    {
+      "name": "genexpr",
+      "camelcase": "GenExpr",
+      "title": "GenExpr",
+      "scope": "source.genexpr",
+      "file-types": [
+        "genexpr"
+      ],
+      "injection-regex": "^genexpr$",
+      "highlights": "queries/genexpr/highlights.scm",
+      "tags": "queries/genexpr/tags.scm"
+    }
+  ],
+  "metadata": {
+    "version": "0.0.1",
+    "license": "MIT",
+    "description": "GenExpr parser",
+    "authors": [
+      {
+        "name": "sadguitarius"
+      }
+    ],
+    "links": {
+      "repository": "https://github.com/sadguitarius/tree-sitter-genexpr"
+    }
+  },
+  "bindings": {
+    "c": true,
+    "go": true,
+    "node": true,
+    "python": true,
+    "rust": true,
+    "swift": true,
+    "zig": false
+  }
+}

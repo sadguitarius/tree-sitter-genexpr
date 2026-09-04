@@ -1,0 +1,193 @@
+==================
+Simple binary arithmetic assignment
+==================
+
+out1 = 1 + 2 * 3;
+
+---
+
+(translation_unit
+  (statement
+    (single_assignment
+      (inlet_outlet)
+      (assignment_operator)
+      (binary_expression
+        (number_literal)
+        (binary_expression
+          (number_literal)
+          (number_literal))))))
+
+==================
+Comparison and logical operators
+==================
+
+out1 = (a > 0) && (b < 1);
+
+---
+
+(translation_unit
+  (statement
+    (single_assignment
+      (inlet_outlet)
+      (assignment_operator)
+      (binary_expression
+        (parenthesized_expression
+          (binary_expression
+            (identifier)
+            (number_literal)))
+        (parenthesized_expression
+          (binary_expression
+            (identifier)
+            (number_literal)))))))
+
+==================
+Ternary conditional expression
+==================
+
+out1 = a > 0 ? 1 : -1;
+
+---
+
+(translation_unit
+  (statement
+    (single_assignment
+      (inlet_outlet)
+      (assignment_operator)
+      (conditional_expression
+        (binary_expression
+          (identifier)
+          (number_literal))
+        (number_literal)
+        (number_literal)))))
+
+==================
+Unary and parenthesized expression
+==================
+
+out1 = -(a + b);
+
+---
+
+(translation_unit
+  (statement
+    (single_assignment
+      (inlet_outlet)
+      (assignment_operator)
+      (unary_expression
+        (parenthesized_expression
+          (binary_expression
+            (identifier)
+            (identifier)))))))
+
+==================
+Literal member call expression
+==================
+
+out1 = buf.sample(x);
+
+---
+
+(translation_unit
+  (statement
+    (single_assignment
+      (inlet_outlet)
+      (assignment_operator)
+      (postfix_expression
+        (identifier)
+        (literal_member_expression
+          (identifier)
+          (call_member_expression
+            (identifier)))))))
+
+==================
+Computed member expression
+==================
+
+out1 = data[i];
+
+---
+
+(translation_unit
+  (statement
+    (single_assignment
+      (inlet_outlet)
+      (assignment_operator)
+      (postfix_expression
+        (identifier)
+        (computed_member_expression
+          (identifier))))))
+
+==================
+Direct call expression
+==================
+
+out1 = cos(x);
+
+---
+
+(translation_unit
+  (statement
+    (single_assignment
+      (inlet_outlet)
+      (assignment_operator)
+      (postfix_expression
+        (identifier)
+        (call_member_expression
+          (identifier))))))
+
+==================
+String literal assignment
+==================
+
+s = "hello world";
+
+---
+
+(translation_unit
+  (statement
+    (single_assignment
+      (identifier)
+      (assignment_operator)
+      (string_literal
+        (string_content)))))
+
+==================
+Backslash inside a double-quoted string
+==================
+
+s = "C:\path\to\file";
+
+---
+
+(translation_unit
+  (statement
+    (single_assignment
+      (identifier)
+      (assignment_operator)
+      (string_literal
+        (string_content)))))
+
+==================
+Port-style equality comparisons
+==================
+
+x = a ==p b;
+y = a !=p b;
+
+---
+
+(translation_unit
+  (statement
+    (single_assignment
+      (identifier)
+      (assignment_operator)
+      (binary_expression
+        (identifier)
+        (identifier))))
+  (statement
+    (single_assignment
+      (identifier)
+      (assignment_operator)
+      (binary_expression
+        (identifier)
+        (identifier)))))

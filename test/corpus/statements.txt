@@ -1,0 +1,364 @@
+==================
+If/else with non-empty blocks
+==================
+
+if (in1 > 0) {
+  out1 = 1;
+} else {
+  out1 = 0;
+}
+
+---
+
+(translation_unit
+  (statement
+    (selection_statement
+      (binary_expression
+        (inlet_outlet)
+        (number_literal))
+      (statement
+        (compound_statement
+          (expr_statement_list
+            (single_assignment
+              (inlet_outlet)
+              (assignment_operator)
+              (number_literal)))))
+      (else_clause
+        (statement
+          (compound_statement
+            (expr_statement_list
+              (single_assignment
+                (inlet_outlet)
+                (assignment_operator)
+                (number_literal)))))))))
+
+==================
+If with empty block
+==================
+
+if (in1 > 0) {
+} else {
+  out1 = 0;
+}
+
+---
+
+(translation_unit
+  (statement
+    (selection_statement
+      (binary_expression
+        (inlet_outlet)
+        (number_literal))
+      (statement
+        (compound_statement))
+      (else_clause
+        (statement
+          (compound_statement
+            (expr_statement_list
+              (single_assignment
+                (inlet_outlet)
+                (assignment_operator)
+                (number_literal)))))))))
+
+==================
+If without else
+==================
+
+if (in1 > 0) {
+  out1 = 1;
+}
+
+---
+
+(translation_unit
+  (statement
+    (selection_statement
+      (binary_expression
+        (inlet_outlet)
+        (number_literal))
+      (statement
+        (compound_statement
+          (expr_statement_list
+            (single_assignment
+              (inlet_outlet)
+              (assignment_operator)
+              (number_literal))))))))
+
+==================
+Nested if/else-if chain
+==================
+
+if (a > 0) {
+  out1 = 1;
+} else if (a < 0) {
+  out1 = -1;
+} else {
+  out1 = 0;
+}
+
+---
+
+(translation_unit
+  (statement
+    (selection_statement
+      (binary_expression
+        (identifier)
+        (number_literal))
+      (statement
+        (compound_statement
+          (expr_statement_list
+            (single_assignment
+              (inlet_outlet)
+              (assignment_operator)
+              (number_literal)))))
+      (else_clause
+        (statement
+          (selection_statement
+            (binary_expression
+              (identifier)
+              (number_literal))
+            (statement
+              (compound_statement
+                (expr_statement_list
+                  (single_assignment
+                    (inlet_outlet)
+                    (assignment_operator)
+                    (number_literal)))))
+            (else_clause
+              (statement
+                (compound_statement
+                  (expr_statement_list
+                    (single_assignment
+                      (inlet_outlet)
+                      (assignment_operator)
+                      (number_literal))))))))))))
+
+==================
+While loop
+==================
+
+i = 0;
+while (i < 10) {
+  i = i + 1;
+}
+
+---
+
+(translation_unit
+  (statement
+    (single_assignment
+      (identifier)
+      (assignment_operator)
+      (number_literal)))
+  (statement
+    (while_statement
+      (binary_expression
+        (identifier)
+        (number_literal))
+      (statement
+        (compound_statement
+          (expr_statement_list
+            (single_assignment
+              (identifier)
+              (assignment_operator)
+              (binary_expression
+                (identifier)
+                (number_literal)))))))))
+
+==================
+Do-while loop
+==================
+
+i = 0;
+do {
+  i = i + 1;
+} while (i < 10);
+
+---
+
+(translation_unit
+  (statement
+    (single_assignment
+      (identifier)
+      (assignment_operator)
+      (number_literal)))
+  (statement
+    (do_statement
+      (statement
+        (compound_statement
+          (expr_statement_list
+            (single_assignment
+              (identifier)
+              (assignment_operator)
+              (binary_expression
+                (identifier)
+                (number_literal))))))
+      (binary_expression
+        (identifier)
+        (number_literal)))))
+
+==================
+For loop
+==================
+
+for (i = 0; i < 10; i = i + 1) {
+  out1 = i;
+}
+
+---
+
+(translation_unit
+  (statement
+    (for_statement
+      (multi_declaration_expression
+        (identifier)
+        (number_literal))
+      (binary_expression
+        (identifier)
+        (number_literal))
+      (single_assignment
+        (identifier)
+        (assignment_operator)
+        (binary_expression
+          (identifier)
+          (number_literal)))
+      (statement
+        (compound_statement
+          (expr_statement_list
+            (single_assignment
+              (inlet_outlet)
+              (assignment_operator)
+              (identifier))))))))
+
+==================
+Break and continue as bare consequences
+==================
+
+for (i = 0; i < 10; i = i + 1) {
+  if (i == 5) break;
+  if (i == 2) continue;
+  out1 = i;
+}
+
+---
+
+(translation_unit
+  (statement
+    (for_statement
+      (multi_declaration_expression
+        (identifier)
+        (number_literal))
+      (binary_expression
+        (identifier)
+        (number_literal))
+      (single_assignment
+        (identifier)
+        (assignment_operator)
+        (binary_expression
+          (identifier)
+          (number_literal)))
+      (statement
+        (compound_statement
+          (expr_statement_list
+            (selection_statement
+              (binary_expression
+                (identifier)
+                (number_literal))
+              (statement
+                (break_statement)))
+            (selection_statement
+              (binary_expression
+                (identifier)
+                (number_literal))
+              (statement
+                (continue_statement)))
+            (single_assignment
+              (inlet_outlet)
+              (assignment_operator)
+              (identifier))))))))
+
+==================
+Line and block comments interspersed with code
+==================
+
+// leading comment
+out1 = 1; // trailing comment
+/* block
+   comment */
+out2 = 2;
+
+---
+
+(translation_unit
+  (comment)
+  (statement
+    (single_assignment
+      (inlet_outlet)
+      (assignment_operator)
+      (number_literal)))
+  (comment)
+  (comment)
+  (statement
+    (single_assignment
+      (inlet_outlet)
+      (assignment_operator)
+      (number_literal))))
+
+==================
+Type keywords usable as plain variable names outside declaration position
+==================
+
+out1 = 1;
+param = 1;
+history = 2;
+buffer = 3;
+data = 4;
+delay = 5;
+out2 = param + history + buffer + data + delay;
+
+---
+
+(translation_unit
+  (statement
+    (single_assignment
+      (inlet_outlet)
+      (assignment_operator)
+      (number_literal)))
+  (statement
+    (single_assignment
+      (identifier)
+      (assignment_operator)
+      (number_literal)))
+  (statement
+    (single_assignment
+      (identifier)
+      (assignment_operator)
+      (number_literal)))
+  (statement
+    (single_assignment
+      (identifier)
+      (assignment_operator)
+      (number_literal)))
+  (statement
+    (single_assignment
+      (identifier)
+      (assignment_operator)
+      (number_literal)))
+  (statement
+    (single_assignment
+      (identifier)
+      (assignment_operator)
+      (number_literal)))
+  (statement
+    (single_assignment
+      (inlet_outlet)
+      (assignment_operator)
+      (binary_expression
+        (binary_expression
+          (binary_expression
+            (binary_expression
+              (identifier)
+              (identifier))
+            (identifier))
+          (identifier))
+        (identifier)))))

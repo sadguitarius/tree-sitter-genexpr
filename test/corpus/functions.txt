@@ -1,0 +1,139 @@
+==================
+Function declaration with return
+==================
+
+myfunc(x, y) {
+  return x + y;
+}
+
+---
+
+(translation_unit
+  (function_declaration
+    (identifier)
+    (function_declaration_parameter
+      (identifier))
+    (function_declaration_parameter
+      (identifier))
+    (expr_statement_list
+      (return_statement
+        (binary_expression
+          (identifier)
+          (identifier))))))
+
+==================
+Function declaration with default-valued and inlet parameters
+==================
+
+myfunc(x, k = 0.5, in1) {
+  return x * k;
+}
+
+---
+
+(translation_unit
+  (function_declaration
+    (identifier)
+    (function_declaration_parameter
+      (identifier))
+    (function_declaration_parameter
+      (identifier)
+      (number_literal))
+    (function_declaration_parameter
+      (inlet_outlet))
+    (expr_statement_list
+      (return_statement
+        (binary_expression
+          (identifier)
+          (identifier))))))
+
+==================
+Function declaration with local declaration and multiple statements
+==================
+
+myfunc(x) {
+  History h(0);
+  y = x + h;
+  h = x;
+  return y;
+}
+
+---
+
+(translation_unit
+  (function_declaration
+    (identifier)
+    (function_declaration_parameter
+      (identifier))
+    (declaration
+      (type_specifier)
+      (identifier)
+      (call_member_expression
+        (number_literal)))
+    (expr_statement_list
+      (single_assignment
+        (identifier)
+        (assignment_operator)
+        (binary_expression
+          (identifier)
+          (identifier)))
+      (single_assignment
+        (identifier)
+        (assignment_operator)
+        (identifier))
+      (return_statement
+        (identifier)))))
+
+==================
+Function declaration returning multiple values
+==================
+
+splitter(x) {
+  a = x / 2;
+  b = x - a;
+  return a, b;
+}
+
+---
+
+(translation_unit
+  (function_declaration
+    (identifier)
+    (function_declaration_parameter
+      (identifier))
+    (expr_statement_list
+      (single_assignment
+        (identifier)
+        (assignment_operator)
+        (binary_expression
+          (identifier)
+          (number_literal)))
+      (single_assignment
+        (identifier)
+        (assignment_operator)
+        (binary_expression
+          (identifier)
+          (identifier)))
+      (return_statement
+        (identifier)
+        (identifier)))))
+
+==================
+Multiple assignment from a call expression
+==================
+
+q, r = divmod(x, y);
+
+---
+
+(translation_unit
+  (statement
+    (multiple_assignment
+      (identifier)
+      (identifier)
+      (assignment_operator)
+      (postfix_expression
+        (identifier)
+        (call_member_expression
+          (identifier)
+          (identifier))))))

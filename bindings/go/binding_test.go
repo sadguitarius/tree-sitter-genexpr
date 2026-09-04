@@ -3,8 +3,8 @@ package tree_sitter_genexpr_test
 import (
 	"testing"
 
-	tree_sitter "github.com/smacker/go-tree-sitter"
-	"github.com/tree-sitter/tree-sitter-genexpr"
+	tree_sitter "github.com/tree-sitter/go-tree-sitter"
+	tree_sitter_genexpr "github.com/sadguitarius/tree-sitter-genexpr/bindings/go"
 )
 
 func TestCanLoadGrammar(t *testing.T) {

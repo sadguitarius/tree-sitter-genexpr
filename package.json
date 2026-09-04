@@ -10,7 +10,7 @@
     "prebuildify": "prebuildify --napi --strip"
   },
   "author": "sadguitarius",
-  "license": "ISC",
+  "license": "MIT",
   "dependencies": {
     "node-gyp-build": "^4.8.0",
     "node-addon-api": "^7.1.0"
@@ -42,7 +42,7 @@
         "genexpr",
         "gendsp"
       ],
-      "highlights": "queries/highlights.scm"
+      "highlights": "queries/genexpr/highlights.scm"
     }
   ]
 }
